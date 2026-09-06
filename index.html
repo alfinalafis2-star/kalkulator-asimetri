@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Gait Asimetri (SI)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 100%;
+        }
+        h2 {
+            color: #1f4e78;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1f4e78;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #143350;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            display: none;
+        }
+        .result-title {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .result-si {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1f4e78;
+            margin: 5px 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        /* Warna Badge Kategori */
+        .sangat-simetris { background-color: #d4edda; color: #155724; }
+        .asimetri-rendah { background-color: #fff3cd; color: #856404; }
+        .asimetri-sedang { background-color: #ffe8d6; color: #a75d00; }
+        .asimetri-tinggi { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Kalkulator Gait Asimetri</h2>
+    
+    <div class="form-group">
+        <label for="xu">Tungkai Kiri / Unaffected (Xu):</label>
+        <input type="number" step="any" id="xu" placeholder="Masukkan nilai...">
+    </div>
+    
+    <div class="form-group">
+        <label for="xa">Tungkai Kanan / Affected (Xa):</label>
+        <input type="number" step="any" id="xa" placeholder="Masukkan nilai...">
+    </div>
+
+    <button onclick="hitungSI()">Hitung & Klasifikasikan</button>
+
+    <div class="result-box" id="resultBox">
+        <div class="result-title">Nilai Symmetry Index (SI):</div>
+        <div class="result-si" id="valSI">0.00%</div>
+        <div class="result-title" style="margin-top: 10px;">Kategori:</div>
+        <span class="badge" id="badgeKat">-</span>
+    </div>
+</div>
+
+<script>
+    function hitungSI() {
+        var xu = parseFloat(document.getElementById('xu').value);
+        var xa = parseFloat(document.getElementById('xa').value);
+
+        if (isNaN(xu) || isNaN(xa)) {
+            alert("Harap isi kedua inputan dengan angka!");
+            return;
+        }
+
+        if ((xu + xa) === 0) {
+            alert("Jumlah parameter tidak boleh nol!");
+            return;
+        }
+
+        // Rumus Robinson Symmetry Index (SI)
+        var si = Math.abs((2 * (xu - xa)) / (xu + xa)) * 100;
+
+        var kategori = "";
+        var badgeClass = "";
+
+        // Klasifikasi
+        if (si < 2) {
+            kategori = "Sangat Simetris (<2%)";
+            badgeClass = "badge sangat-simetris";
+        } else if (si <= 5) {
+            kategori = "Asimetri Rendah (2-5%)";
+            badgeClass = "badge asimetri-rendah";
+        } else if (si <= 7) {
+            kategori = "Asimetri Sedang (5-7%)";
+            badgeClass = "badge asimetri-sedang";
+        } else {
+            kategori = "Asimetri Tinggi (>7%)";
+            badgeClass = "badge asimetri-tinggi";
+        }
+
+        // Tampilkan Hasil
+        document.getElementById('valSI').innerText = si.toFixed(2) + "%";
+        var badge = document.getElementById('badgeKat');
+        badge.innerText = kategori;
+        badge.className = badgeClass;
+        
+        document.getElementById('resultBox').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
